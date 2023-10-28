@@ -16,10 +16,10 @@ def read_item(item_id: int, q: Optional[str] = None):
     return {"item_id": item_id, "q": q}
     
 @app.get('/developer/{desarrollador}')
-def developer(desarollador:str):
+def developer(desarrollador:str):
   df=pd.read_csv("apiFreeDeveloper.csv")
-  total_datos = df[(df['developer']==desarollador)].groupby(["year"]).count()["developer"]
-  datos_free = df[(df['developer']==desarollador)&(df['price']=="Free")].groupby(["year"]).count()["developer"]
+  total_datos = df[(df['developer']==desarrollador)].groupby(["year"]).count()["developer"]
+  datos_free = df[(df['developer']==desarrollador)&(df['price']=="Free")].groupby(["year"]).count()["developer"]
   df_1=pd.DataFrame(total_datos)
   df_2=pd.DataFrame(datos_free)
   

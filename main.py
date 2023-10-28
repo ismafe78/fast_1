@@ -31,7 +31,7 @@ def developer(desarrollador:str):
   mul=df_t["developer_y"]*100
   df_t['Contenido Free']=mul.div(df_t["developer_x"])
 
-  return print(df_t)
+  return print( df_t.to_json(orient="records",lines=True,indent=2))
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):

@@ -39,8 +39,8 @@ def userdata( User_id : str ):
   gasto=total[total["user_id"]==User_id]["price"].sum()
   conteo_item=total[total["user_id"]==User_id]["user_id"].count()
   sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
-  pporciento=(sum_true*100)/conteo_item
-  return {"Usuario" : User_id, "Dinero gastado": gasto , "P de recomendación": pporciento, "cantidad de items": conteo_item}
+  pporciento=(sum_true * 100)div(conteo_item)
+  return {"Usuario" :"x", "Dinero gastado": gasto , "P de recomendación": pporciento, "cantidad de items": conteo_item}
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):

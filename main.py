@@ -40,7 +40,7 @@ def userdata( User_id : str ):
   conteo_item=total[total["user_id"]==User_id]["user_id"].count()
   sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
   pporciento=(sum_true * 100)/conteo_item
-  return {"Usuario" :"x", "Dinero gastado": gasto , "P de recomendación": pporciento, "cantidad de items": conteo_item}
+  return gasto,pporciento,conteo_item
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):
@@ -49,5 +49,5 @@ def get_max_duration(anio: int, plataforma: str, dtype: str):
     duracion_maxima = df_m_d[(df_m_d["release_year"]==anio) 
        & (df_m_d["plataforma"]==plataforma)
         & (df_m_d["duration_type"]==dtype)]["title"].max()
-    
+    {"Usuario" :"x", "Dinero gastado": gasto , "P de recomendación": pporciento, "cantidad de items": conteo_item}
     return {'pelicula': duracion_maxima}

@@ -42,7 +42,7 @@ def userdata( User_id : str ):
   sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
   pporciento=(sum_true * 100)/conteo_item
   x = np.float32(gasto)  
-  return  x = np.float32(gasto)
+  return  x
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):

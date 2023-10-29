@@ -43,7 +43,7 @@ def userdata( User_id : str ):
   pporciento=(sum_true * 100)/conteo_item
   arr = np.array([gasto, pporciento , conteo_item]
                  
-  return {"array": arr.tolist()}
+  return arr.tolist()
  
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')

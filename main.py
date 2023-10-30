@@ -43,7 +43,7 @@ def userdata( User_id : str ):
   pporciento=(sum_true * 100)/conteo_item
   #arr = ([{gasto}, {pporciento} , {conteo_item}])
                  
-  return conteo_item
+  return "conteo_item"
 
 
 @app.get('/UserForGenre/{genero}')

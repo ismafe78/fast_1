@@ -41,9 +41,9 @@ def userdata( User_id : str ):
   conteo_item=total[total["user_id"]==User_id]["user_id"].count()
   sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
   pporciento=(sum_true * 100)/conteo_item
-  arr = ([{gasto}, {pporciento} , {conteo_item}])
+  #arr = ([{gasto}, {pporciento} , {conteo_item}])
                  
-  return arr.to_list()
+  return conteo_item
 
 
 @app.get('/UserForGenre/{genero}')

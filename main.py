@@ -47,7 +47,7 @@ def userdata( User_id : str ):
 
 
 @app.get('/UserForGenre/{genero}')
- def UserForGenre(genero:str):
+def UserForGenre(genero:str):
   genre_csv=pd.read_csv('genres_join.csv')
   max_playtime=genre_csv[genre_csv['genres']==genero][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
   u_i=max_playtime["user_id"]

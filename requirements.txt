@@ -1,4 +1,4 @@
-/opt/render/project/src/.venv/bin/python -m pip install --upgrade pip
+/opt/render/project/src/.venv/bin/python pip install --upgrade pip
 annotated-types==0.5.0
 anyio==3.7.1
 click==8.1.7

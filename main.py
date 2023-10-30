@@ -41,10 +41,21 @@ def userdata( User_id : str ):
   conteo_item=total[total["user_id"]==User_id]["user_id"].count()
   sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
   pporciento=(sum_true * 100)/conteo_item
-  arr = np.array([gasto, pporciento , conteo_item]
+  arr = np.array([gasto, pporciento , conteo_item])
                  
-  return arr.tolist()
- 
+  return arr.to_list()
+
+
+@app.get('/UserForGenre/{genero}')
+ def UserForGenre( genero):
+  genre_csv=pd.read_csv('genres_join.csv')
+  max_playtime=genre_csv[genre_csv['genres']=='Action'][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
+  u_i=max_playtime["user_id"]
+  valor=u_i.to_string().split()[1]
+  diccionario_f=genre_csv[genre_csv['user_id']==valor].groupby("year").sum()["playtime"].to_dict()
+
+  return diccionario_f
+
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):

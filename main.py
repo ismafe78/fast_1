@@ -47,9 +47,9 @@ def userdata( User_id : str ):
 
 
 @app.get('/UserForGenre/{genero}')
- def UserForGenre( genero):
+ def UserForGenre(genero:str):
   genre_csv=pd.read_csv('genres_join.csv')
-  max_playtime=genre_csv[genre_csv['genres']=='Action'][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
+  max_playtime=genre_csv[genre_csv['genres']==genero][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
   u_i=max_playtime["user_id"]
   valor=u_i.to_string().split()[1]
   diccionario_f=genre_csv[genre_csv['user_id']==valor].groupby("year").sum()["playtime"].to_dict()

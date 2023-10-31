@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from typing import Optional
+from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 from fastapi import FastAPI
 
@@ -55,7 +57,33 @@ def UserForGenre(genero:str):
   diccionario_f=genre_csv[genre_csv['user_id']==valor].groupby("year").sum()["playtime"].to_dict()
 
   return diccionario_f
+    
+@app.get('/recomendacion_juego/{id_de_producto}') 
+def recomendacion_juego( id_de_producto ):
+    
+    DF=pd.read_csv('recomender.csv')
+    DF.rename(columns={"title\r":"title"},inplace=True)
+    DF.drop(columns="Unnamed: 0",inplace=True)
+    
+    n=5
 
+    vectoracer= CountVectorizer()
+    tf= TfidfVectorizer(stop_words=["free","Free","Free to play","sin tag"])
+    matriz_tf=tf.fit_transform(DF["tags"])
+    similutud_coseno=linear_kernel(matriz_tf,matriz_tf)
+
+
+
+
+    resultados={}
+    #similutud_coseno=np.fromfile("si_cos.dat")
+    for idx, row in DF.iterrows():
+            indices_similares=similutud_coseno[idx].argsort()[:-n-2:-1]
+            simimlar_items= [(f'{DF["title"][i]} ' , round(similutud_coseno[idx][i], 3)) for i in indices_similares]
+            resultados[f'{row["title"]}']=simimlar_items[1:]
+
+    d= resultados[id_de_producto]
+    return d
 
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):

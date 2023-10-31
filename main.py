@@ -35,8 +35,10 @@ def developer(desarrollador:str):
 
   return df_t.to_json(orient="records",lines=True,indent=2
 
+                      
+
 @app.get('/userdata/{User_id}')                      
-def userdata( User_id: str ):
+def userdata(User_id:str):
 
 
   total=pd.read_csv("/content/drive/MyDrive/user_reviews_corto_to.csv",lineterminator='\n')

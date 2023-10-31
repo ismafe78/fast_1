@@ -87,6 +87,7 @@ def recomendacion_juego( id_de_producto :str ):
 
 @app.get('/developer_reviews_analysis/{desarrolladora}')
 def developer_reviews_analysis( desarrolladora: str):
+    developer_jooin=pd.read_csv("/content/drive/MyDrive/developer_join.csv",lineterminator='\n')
     consulta_developer=developer_jooin[developer_jooin['developer']==desarrolladora][["developer","sentiment_analysis"]].groupby("sentiment_analysis").count()
     d=consulta_developer.to_dict()
     di={}

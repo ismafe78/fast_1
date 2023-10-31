@@ -59,7 +59,7 @@ def UserForGenre(genero:str):
   return diccionario_f
     
 @app.get('/recomendacion_juego/{id_de_producto}') 
-def recomendacion_juego( id_de_producto ):
+def recomendacion_juego( id_de_producto :str ):
     
     DF=pd.read_csv('recomender.csv')
     DF.rename(columns={"title\r":"title"},inplace=True)

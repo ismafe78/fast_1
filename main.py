@@ -3,7 +3,6 @@ import numpy as np
 from typing import Optional
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -19,21 +18,21 @@ def read_item(item_id: int, q: Optional[str] = None):
     
 @app.get('/developer/{desarrollador}')
 def developer(desarrollador:str):
-  df=pd.read_csv("apiFreeDeveloper.csv")
-  total_datos = df[(df['developer']==desarrollador)].groupby(["year"]).count()["developer"]
-  datos_free = df[(df['developer']==desarrollador)&(df['price']=="Free")].groupby(["year"]).count()["developer"]
-  df_1=pd.DataFrame(total_datos)
-  df_2=pd.DataFrame(datos_free)
-  
-  
-  df_2.reset_index(inplace=True)
-  df_1.reset_index(inplace=True)
+    df=pd.read_csv("apiFreeDeveloper.csv")
+    total_datos = df[(df['developer']==desarrollador)].groupby(["year"]).count()["developer"]
+    datos_free = df[(df['developer']==desarrollador)&(df['price']=="Free")].groupby(["year"]).count()["developer"]
+    df_1=pd.DataFrame(total_datos)
+    df_2=pd.DataFrame(datos_free)
+    
+    
+    df_2.reset_index(inplace=True)
+    df_1.reset_index(inplace=True)
 
-  df_t=df_1.merge(df_2, left_on='year', right_on='year')
-  mul=df_t["developer_y"]*100
-  df_t['Contenido Free']=mul.div(df_t["developer_x"])
+    df_t=df_1.merge(df_2, left_on='year', right_on='year')
+    mul=df_t["developer_y"]*100
+    df_t['Contenido Free']=mul.div(df_t["developer_x"])
 
-  return df_t.to_json(orient="records",lines=True,indent=2
+    return df_t.to_json(orient="records",lines=True,indent=2)
 
                       
 
@@ -41,53 +40,49 @@ def developer(desarrollador:str):
 def userdata(User_id:str):
 
 
-  total=pd.read_csv("/content/drive/MyDrive/user_reviews_corto_to.csv",lineterminator='\n')
-  gasto=float(total[total["user_id"]==User_id]["price"].sum())
+    total=pd.read_csv("/content/drive/MyDrive/user_reviews_corto_to.csv",lineterminator='\n')
+    gasto=float(total[total["user_id"]==User_id]["price"].sum())
+    conteo_item=int(total[total["user_id"]==User_id]["user_id"].count())
+    sum_true=int(total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count())
+    pporciento=(sum_true*100)/conteo_item
 
-  conteo_item=int(total[total["user_id"]==User_id]["user_id"].count())
-  sum_true=int(total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count())
-  pporciento=(sum_true*100)/conteo_item
-
-  return {"Usuario" : User_id, "Dinero gastado":( gasto ,"USD"), "% de recomendación": (pporciento ," %"), "cantidad de items": conteo_item}
+    return {"Usuario" : User_id, "Dinero gastado":( gasto ,"USD"), "% de recomendación": (pporciento ," %"), "cantidad de items": conteo_item}
 
 
 
 @app.get('/UserForGenre/{genero}')
 def UserForGenre(genero:str):
-  genre_csv=pd.read_csv('genres_join.csv')
-  max_playtime=genre_csv[genre_csv['genres']==genero][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
-  u_i=max_playtime["user_id"]
-  valor=u_i.to_string().split()[1]
-  diccionario_f=genre_csv[genre_csv['user_id']==valor].groupby("year").sum()["playtime"].to_dict()
+    genre_csv=pd.read_csv('genres_join.csv')
+    max_playtime=genre_csv[genre_csv['genres']==genero][["playtime","user_id","year"]].sort_values(by="playtime",ascending=False).head(1)
+    u_i=max_playtime["user_id"]
+    valor=u_i.to_string().split()[1]
+    diccionario_f=genre_csv[genre_csv['user_id']==valor].groupby("year").sum()["playtime"].to_dict()
 
-  return diccionario_f
+    return diccionario_f
     
 @app.get('/recomendacion_juego/{id_de_producto}') 
 def recomendacion_juego( id_de_producto :str ):
     
-    DF=pd.read_csv('recomender.csv')
-    DF.rename(columns={"title\r":"title"},inplace=True)
-    DF.drop(columns="Unnamed: 0",inplace=True)
-    
-    n=5
+        DF=pd.read_csv('recomender.csv')
+        DF.rename(columns={"title\r":"title"},inplace=True)
+        DF.drop(columns="Unnamed: 0",inplace=True)
+        
+        n=5
 
-    vectoracer= CountVectorizer()
-    tf= TfidfVectorizer(stop_words=["free","Free","Free to play","sin tag"])
-    matriz_tf=tf.fit_transform(DF["tags"])
-    similutud_coseno=linear_kernel(matriz_tf,matriz_tf)
+        
+        tf= TfidfVectorizer(stop_words=["free","Free","Free to play","sin tag"])
+        matriz_tf=tf.fit_transform(DF["tags"])
+        similutud_coseno=linear_kernel(matriz_tf,matriz_tf)
 
+        resultados={}
+        #similutud_coseno=np.fromfile("si_cos.dat")
+        for idx, row in DF.iterrows():
+                indices_similares=similutud_coseno[idx].argsort()[:-n-2:-1]
+                simimlar_items= [(f'{DF["title"][i]} ' , round(similutud_coseno[idx][i], 3)) for i in indices_similares]
+                resultados[f'{row["title"]}']=simimlar_items[1:]
 
-
-
-    resultados={}
-    #similutud_coseno=np.fromfile("si_cos.dat")
-    for idx, row in DF.iterrows():
-            indices_similares=similutud_coseno[idx].argsort()[:-n-2:-1]
-            simimlar_items= [(f'{DF["title"][i]} ' , round(similutud_coseno[idx][i], 3)) for i in indices_similares]
-            resultados[f'{row["title"]}']=simimlar_items[1:]
-
-    d= resultados[id_de_producto]
-    return d
+        d= resultados[id_de_producto]
+        return d
 
 @app.get('/developer_reviews_analysis/{desarrolladora}')
 def developer_reviews_analysis( desarrolladora: str):

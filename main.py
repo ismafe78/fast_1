@@ -40,7 +40,7 @@ def developer(desarrollador:str):
 def userdata(User_id:str):
 
 
-    total=pd.read_csv("/content/drive/MyDrive/user_reviews_corto_to.csv",lineterminator='\n')
+    total=pd.read_csv("user_reviews_corto_to.csv",lineterminator='\n')
     gasto=float(total[total["user_id"]==User_id]["price"].sum())
     conteo_item=int(total[total["user_id"]==User_id]["user_id"].count())
     sum_true=int(total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count())

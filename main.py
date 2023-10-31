@@ -33,19 +33,21 @@ def developer(desarrollador:str):
   mul=df_t["developer_y"]*100
   df_t['Contenido Free']=mul.div(df_t["developer_x"])
 
-  return df_t.to_json(orient="records",lines=True,indent=2)
-    
-@app.get('/userdata/{User_id}')
-def userdata( User_id : str ):
-   
-  total=pd.read_csv("user_reviews_corto_to.csv",lineterminator='\n')
-  gasto=total[total["user_id"]==User_id]["price"].sum()
-  conteo_item=total[total["user_id"]==User_id]["user_id"].count()
-  sum_true=total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count()
-  pporciento=(sum_true * 100)/conteo_item
-  #arr = ([{gasto}, {pporciento} , {conteo_item}])
-                 
-  return "conteo_item"
+  return df_t.to_json(orient="records",lines=True,indent=2
+
+@app.get('/userdata/{User_id}')                      
+def userdata( User_id: str ):
+
+
+  total=pd.read_csv("/content/drive/MyDrive/user_reviews_corto_to.csv",lineterminator='\n')
+  gasto=float(total[total["user_id"]==User_id]["price"].sum())
+
+  conteo_item=int(total[total["user_id"]==User_id]["user_id"].count())
+  sum_true=int(total[(total["user_id"]==User_id )&(total['recomended']== True)]["recomended"].count())
+  pporciento=(sum_true*100)/conteo_item
+
+  return {"Usuario" : User_id, "Dinero gastado":( gasto ,"USD"), "% de recomendación": (pporciento ," %"), "cantidad de items": conteo_item}
+
 
 
 @app.get('/UserForGenre/{genero}')

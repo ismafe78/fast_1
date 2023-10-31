@@ -85,6 +85,16 @@ def recomendacion_juego( id_de_producto :str ):
     d= resultados[id_de_producto]
     return d
 
+@app.get('/developer_reviews_analysis/{desarrolladora}')
+def developer_reviews_analysis( desarrolladora):
+    consulta_developer=developer_jooin[developer_jooin['developer']=="Valve"][["developer","sentiment_analysis"]].groupby("sentiment_analysis").count()
+    d=consulta_developer.to_dict()
+    di={}
+    di["DEVOLOPER"]=desarrolladora
+    di["NEG"]=d['developer'][0]
+    di["POS"]=d['developer'][1]
+    return di
+
 @app.get('/get_max_duration/{anio}/{plataforma}/{dtype}')
 def get_max_duration(anio: int, plataforma: str, dtype: str):
     
